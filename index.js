@@ -13,6 +13,26 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Admin = require("./models/admin");
 const app = express();
 const Product = require("./models/product");
+//-momery unleaked---------
+app.set('trust proxy', 1);
+
+app.use(session({
+cookie:{
+    secure: true,
+    maxAge:60000
+       },
+store: new RedisStore(),
+secret: 'secret',
+saveUninitialized: true,
+resave: false
+}));
+
+app.use(function(req,res,next){
+if(!req.session){
+    return next(new Error('Oh no')) //handle error
+}
+next() //otherwise continue
+});
 
 
 mongoose.set('useNewUrlParser', true);
