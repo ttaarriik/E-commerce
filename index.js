@@ -14,11 +14,6 @@ const Admin = require("./models/admin");
 const app = express();
 const Product = require("./models/product");
 
-var session = require('express-session')
-var MemoryStore = require('memorystore')(session)
- 
-
-
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -42,17 +37,12 @@ app.use((req, res, next) => {
 
 
 //PASSPORT CONFIGURE
-app.use(session({
-    cookie: { maxAge: 86400000 },
-    store: new MemoryStore({
-      checkPeriod: 86400000 // prune expired entries every 24h
-    }),
-    secret: 'keyboard cat',
+
+app.use(require('express-session')({
+	secret: "tareq",
 	resave: false,
 	saveUninitialized: false
-}))
-
-
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -68,6 +58,6 @@ app.use(productRouter);
 app.use(productShow);
 app.use(cartRouter);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log('Listening');
 });
