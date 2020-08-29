@@ -20,8 +20,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect("mongodb+srv://ttaarriik:nfhbr1996@cluster0.jspi4.mongodb.net/Ecommerce?retryWrites=true&w=majority");
-console.log(process.env.DATABASE);
+mongoose.connect(process.env.DATABASE);
 
 app.set("view engine", "ejs");
 app.use(methodOverride('_method'));
