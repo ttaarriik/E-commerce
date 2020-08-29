@@ -13,26 +13,23 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Admin = require("./models/admin");
 const app = express();
 const Product = require("./models/product");
-//-momery unleaked---------
-app.set('trust proxy', 1);
+const session = require("cookie-session");
 
-app.use(session({
-cookie:{
-    secure: true,
-    maxAge:60000
-       },
-store: new RedisStore(),
-secret: 'secret',
-saveUninitialized: true,
-resave: false
-}));
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
 
-app.use(function(req,res,next){
-if(!req.session){
-    return next(new Error('Oh no')) //handle error
-}
-next() //otherwise continue
-});
+// Access the session as req.session
+app.get('/', function(req, res, next) {
+  if (req.session.views) {
+    req.session.views++
+    res.setHeader('Content-Type', 'text/html')
+    res.write('<p>views: ' + req.session.views + '</p>')
+    res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
+    res.end()
+  } else {
+    req.session.views = 1
+    res.end('welcome to the session demo. refresh!')
+  }
+})
 
 
 mongoose.set('useNewUrlParser', true);
