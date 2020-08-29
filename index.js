@@ -13,23 +13,11 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Admin = require("./models/admin");
 const app = express();
 const Product = require("./models/product");
-const session = require("cookie-session");
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
+var session = require('express-session')
+var MemoryStore = require('memorystore')(session)
+ 
 
-// Access the session as req.session
-app.get('/', function(req, res, next) {
-  if (req.session.views) {
-    req.session.views++
-    res.setHeader('Content-Type', 'text/html')
-    res.write('<p>views: ' + req.session.views + '</p>')
-    res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
-    res.end()
-  } else {
-    req.session.views = 1
-    res.end('welcome to the session demo. refresh!')
-  }
-})
 
 
 mongoose.set('useNewUrlParser', true);
@@ -54,12 +42,17 @@ app.use((req, res, next) => {
 
 
 //PASSPORT CONFIGURE
-
-app.use(require("express-session")({
-	secret: "tareq",
+app.use(session({
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    secret: 'keyboard cat',
 	resave: false,
 	saveUninitialized: false
-}));
+}))
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
