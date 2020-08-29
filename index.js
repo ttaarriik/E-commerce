@@ -20,7 +20,8 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect(process.env.DATABASE);
+let url = process.env.DATABASE || 3000;
+mongoose.connect(url);
 
 app.set("view engine", "ejs");
 app.use(methodOverride('_method'));
